@@ -91,30 +91,10 @@ void ModemManager::ModemDevicePrivate::initInterfaces()
                                          this, SLOT(onSimPathChanged(QString,QString)));
                     }
                 }
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_SIMPLE)) {
-                interfaceList.insert(ModemManager::ModemDevice::SimpleInterface, ModemManager::ModemSimple::Ptr());
             } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP)) {
                 interfaceList.insert(ModemManager::ModemDevice::GsmInterface, ModemManager::Modem3gpp::Ptr());
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP_USSD)) {
-                interfaceList.insert(ModemManager::ModemDevice::GsmUssdInterface, ModemManager::Modem3gppUssd::Ptr());
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEMCDMA)) {
-                interfaceList.insert(ModemManager::ModemDevice::CdmaInterface, ModemManager::ModemCdma::Ptr());
             } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MESSAGING)) {
                 interfaceList.insert(ModemManager::ModemDevice::MessagingInterface, ModemManager::ModemMessaging::Ptr());
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_LOCATION)) {
-                interfaceList.insert(ModemManager::ModemDevice::LocationInterface, ModemManager::ModemLocation::Ptr());
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_TIME)) {
-                interfaceList.insert(ModemManager::ModemDevice::TimeInterface, ModemManager::ModemTime::Ptr());
-            }
-#if MM_CHECK_VERSION(1, 2, 0)
-              else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_OMA)) {
-                interfaceList.insert(ModemManager::ModemDevice::OmaInterface, ModemManager::ModemOma::Ptr());
-            } else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_SIGNAL)) {
-                interfaceList.insert(ModemManager::ModemDevice::SignalInterface, ModemManager::ModemSignal::Ptr());
-            }
-#endif
-            else if (name == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_FIRMWARE)) {
-                interfaceList.insert(ModemManager::ModemDevice::FirmwareInterface, ModemManager::ModemFirmware::Ptr());
             }
         }
     }
@@ -195,37 +175,11 @@ ModemManager::Interface::Ptr ModemManager::ModemDevicePrivate::createInterface(M
         case ModemManager::ModemDevice::ModemInterface:
             createdInterface = ModemManager::Interface::Ptr(new ModemManager::Modem(uni), &QObject::deleteLater);
             break;
-        case ModemManager::ModemDevice::SimpleInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemSimple(uni), &QObject::deleteLater);
-            break;
         case ModemManager::ModemDevice::GsmInterface:
             createdInterface = ModemManager::Interface::Ptr(new ModemManager::Modem3gpp(uni), &QObject::deleteLater);
             break;
-        case ModemManager::ModemDevice::GsmUssdInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::Modem3gppUssd(uni), &QObject::deleteLater);
-            break;
-        case ModemManager::ModemDevice::CdmaInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemCdma(uni), &QObject::deleteLater);
-            break;
         case ModemManager::ModemDevice::MessagingInterface:
             createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemMessaging(uni), &QObject::deleteLater);
-            break;
-        case ModemManager::ModemDevice::LocationInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemLocation(uni), &QObject::deleteLater);
-            break;
-        case ModemManager::ModemDevice::TimeInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemTime(uni), &QObject::deleteLater);
-            break;
-#if MM_CHECK_VERSION(1, 2, 0)
-        case ModemManager::ModemDevice::OmaInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemOma(uni), &QObject::deleteLater);
-            break;
-        case ModemManager::ModemDevice::SignalInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemSignal(uni), &QObject::deleteLater);
-            break;
-#endif
-        case ModemManager::ModemDevice::FirmwareInterface:
-            createdInterface = ModemManager::Interface::Ptr(new ModemManager::ModemFirmware(uni), &QObject::deleteLater);
             break;
     }
     return createdInterface;
@@ -322,11 +276,6 @@ bool ModemManager::ModemDevice::isGsmModem() const
     return hasInterface(ModemManager::ModemDevice::GsmInterface);
 }
 
-bool ModemManager::ModemDevice::isCdmaModem() const
-{
-    return hasInterface(ModemManager::ModemDevice::CdmaInterface);
-}
-
 void ModemManager::ModemDevicePrivate::onInterfacesAdded(const QDBusObjectPath &object_path, const MMVariantMapMap &interfaces_and_properties)
 {
     if (object_path.path() != uni) {
@@ -342,26 +291,8 @@ void ModemManager::ModemDevicePrivate::onInterfacesAdded(const QDBusObjectPath &
                 interfaceList.insert(ModemManager::ModemDevice::SimpleInterface, ModemManager::ModemSimple::Ptr());
             } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP)) {
                 interfaceList.insert(ModemManager::ModemDevice::GsmInterface, ModemManager::Modem3gpp::Ptr());
-            } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP_USSD)) {
-                interfaceList.insert(ModemManager::ModemDevice::GsmUssdInterface, ModemManager::Modem3gppUssd::Ptr());
-            } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEMCDMA)) {
-                interfaceList.insert(ModemManager::ModemDevice::CdmaInterface, ModemManager::ModemCdma::Ptr());
             } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MESSAGING)) {
                 interfaceList.insert(ModemManager::ModemDevice::MessagingInterface, ModemManager::ModemMessaging::Ptr());
-            } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_LOCATION)) {
-                interfaceList.insert(ModemManager::ModemDevice::LocationInterface, ModemManager::ModemLocation::Ptr());
-            } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_TIME)) {
-                interfaceList.insert(ModemManager::ModemDevice::TimeInterface, ModemManager::ModemTime::Ptr());
-            }
-#if MM_CHECK_VERSION(1, 2, 0)
-              else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_OMA)) {
-                interfaceList.insert(ModemManager::ModemDevice::OmaInterface, ModemManager::ModemOma::Ptr());
-            } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_SIGNAL)) {
-                interfaceList.insert(ModemManager::ModemDevice::SignalInterface, ModemManager::ModemSignal::Ptr());
-            }
-#endif
-            else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_FIRMWARE)) {
-                interfaceList.insert(ModemManager::ModemDevice::FirmwareInterface, ModemManager::ModemFirmware::Ptr());
             }
         }
     }
@@ -386,28 +317,8 @@ void ModemManager::ModemDevicePrivate::onInterfacesRemoved(const QDBusObjectPath
             interfaceList.remove(ModemManager::ModemDevice::ModemInterface);
         } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_SIMPLE)) {
             interfaceList.remove(ModemManager::ModemDevice::SimpleInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP)) {
-            interfaceList.remove(ModemManager::ModemDevice::GsmInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEM3GPP_USSD)) {
-            interfaceList.remove(ModemManager::ModemDevice::GsmUssdInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MODEMCDMA)) {
-            interfaceList.remove(ModemManager::ModemDevice::CdmaInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_MESSAGING)) {
-            interfaceList.remove(ModemManager::ModemDevice::MessagingInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_LOCATION)) {
-            interfaceList.remove(ModemManager::ModemDevice::LocationInterface);
         } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_TIME)) {
             interfaceList.remove(ModemManager::ModemDevice::TimeInterface);
-        }
-#if MM_CHECK_VERSION(1, 2, 0)
-          else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_OMA)) {
-            interfaceList.remove(ModemManager::ModemDevice::OmaInterface);
-        } else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_SIGNAL)) {
-            interfaceList.remove(ModemManager::ModemDevice::SignalInterface);
-        }
-#endif
-          else if (iface == QLatin1String(MMQT_DBUS_INTERFACE_MODEM_FIRMWARE)) {
-            interfaceList.remove(ModemManager::ModemDevice::FirmwareInterface);
         }
     }
 }

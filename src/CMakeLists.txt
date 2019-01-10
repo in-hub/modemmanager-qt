@@ -10,15 +10,9 @@ set(ModemManagerQt_SRCS
     interface.cpp
     manager.cpp
     modem.cpp
-    modemsimple.cpp
     modem3gpp.cpp
-    modem3gppussd.cpp
-    modemcdma.cpp
     modemdevice.cpp
-    modemfirmware.cpp
-    modemlocation.cpp
     modemmessaging.cpp
-    modemtime.cpp
     sim.cpp
     sms.cpp
 )
@@ -26,55 +20,12 @@ set(ModemManagerQt_SRCS
 set(DBUS_INTERFACES_FILES
    dbus/bearerinterface.cpp
    dbus/dbus_manager.cpp
-   dbus/firmwareinterface.cpp
-   dbus/locationinterface.cpp
    dbus/messaginginterface.cpp
    dbus/modem3gppinterface.cpp
-   dbus/modemcdmainterface.cpp
    dbus/modeminterface.cpp
    dbus/modemmanager1interface.cpp
    dbus/siminterface.cpp
-   dbus/simpleinterface.cpp
    dbus/smsinterface.cpp
-   dbus/timeinterface.cpp
-   dbus/ussdinterface.cpp
-)
-
-if (${MODEMMANAGER_VERSION} VERSION_EQUAL 1.2.0 OR ${MODEMMANAGER_VERSION} VERSION_GREATER 1.2.0)
-    set(ModemManagerQt_SRCS
-        ${ModemManagerQt_SRCS}
-        modemoma.cpp
-        modemsignal.cpp
-        )
-
-    set(DBUS_INTERFACES_FILES
-        ${DBUS_INTERFACES_FILES}
-        dbus/omainterface.cpp
-        dbus/signalinterface.cpp
-        )
-endif()
-
-if (${MODEMMANAGER_VERSION} VERSION_EQUAL 1.6.0 OR ${MODEMMANAGER_VERSION} VERSION_GREATER 1.6.0)
-    set(ModemManagerQt_SRCS
-        ${ModemManagerQt_SRCS}
-        modemvoice.cpp
-        call.cpp
-        )
-
-    set(DBUS_INTERFACES_FILES
-        ${DBUS_INTERFACES_FILES}
-        dbus/callinterface.cpp
-        dbus/voiceinterface.cpp
-        )
-endif()
-
-ecm_qt_export_logging_category(
-    IDENTIFIER MMQT
-    CATEGORY_NAME kf.modemmanagerqt
-    OLD_CATEGORY_NAMES modemmanager-qt
-    DEFAULT_SEVERITY Warning
-    DESCRIPTION "ModemManagerQt"
-    EXPORT MODEMMANAGERQT
 )
 
 add_library(KF5ModemManagerQt SHARED ${ModemManagerQt_SRCS} ${DBUS_INTERFACES_FILES})
@@ -91,13 +42,6 @@ set_target_properties(KF5ModemManagerQt PROPERTIES VERSION ${MODEMMANAGERQT_VERS
 )
 
 target_include_directories(KF5ModemManagerQt PUBLIC ${MODEMMANAGER_INCLUDE_DIRS})
-
-########### static lib for tests  ###############
-add_library(KF5ModemManagerQt_static STATIC ${ModemManagerQt_SRCS} ${DBUS_INTERFACES_FILES})
-set_target_properties(KF5ModemManagerQt_static PROPERTIES COMPILE_FLAGS -DMMQT_STATIC=1)
-
-target_link_libraries(KF5ModemManagerQt_static PUBLIC Qt5::Core Qt5::DBus Qt5::Xml)
-target_include_directories(KF5ModemManagerQt_static PUBLIC "$<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/..;${CMAKE_CURRENT_BINARY_DIR}/..>")
 
 ecm_generate_headers(ModemManagerQt_HEADERS
   HEADER_NAMES
